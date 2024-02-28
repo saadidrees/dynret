@@ -38,7 +38,7 @@ fname_data_train_val_test_all = '/home/saad/postdoc_db/analyses/data_kiersten/mo
 
 
 idx_train_start = 0    # mins to chop off in the begining.
-trainingSamps_dur = 5      # minutes (total is like 50 mins i think. If you put -1 here then you will load all the data
+trainingSamps_dur = 30      # minutes (total is like 50 mins i think. If you put -1 here then you will load all the data
 validationSamps_dur = 1 # minutes
 testSamps_dur = 0.3 # minutes
 
@@ -64,7 +64,7 @@ Same for data_val and data_test. The three datasets (train, val and test) will n
 """
 
 # %% Arrange data in training samples format. Roll the time dimension to have movie chunks equal to the temporal width of your CNN
-temporal_width = 40   # frames (120 frames ~ 1s)
+temporal_width = 120   # frames (120 frames ~ 1s)
 idx_unitsToTake = np.arange(0,data_train.y.shape[-1])   # Take all the rgcs
 data_train = prepare_data_cnn2d(data_train,temporal_width,idx_unitsToTake)     # [samples,temporal_width,rows,columns]
 data_test = prepare_data_cnn2d(data_test,temporal_width,idx_unitsToTake)
@@ -73,11 +73,11 @@ data_val = prepare_data_cnn2d(data_val,temporal_width,idx_unitsToTake)
 
 # %% Build a conventional-CNN
 
-chan1_n=2#10
+chan1_n=10
 filt1_size=11
-chan2_n=4#15
+chan2_n=15
 filt2_size=7
-chan3_n=6#20
+chan3_n=20
 filt3_size=7
 bz=125
 BatchNorm=1
@@ -99,7 +99,7 @@ mdl.summary()
 
 # %% Train model
 lr = 0.0001
-nb_epochs=2
+nb_epochs=100
 
 mdl.compile(loss='poisson', optimizer=tf.keras.optimizers.legacy.Adam(lr))
 mdl_history = mdl.fit(x=data_train.X, y=data_train.y, validation_data=(data_val.X,data_val.y), validation_freq=1, shuffle=True,batch_size=bz, epochs=nb_epochs)
