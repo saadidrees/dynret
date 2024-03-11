@@ -478,7 +478,7 @@ def load_h5Dataset(fname_data_train_val_test,LOAD_TR=True,LOAD_VAL=True,LOAD_ALL
     
     
 
-def model_evaluate_new(obs_rate_allStimTrials,pred_rate,filt_width,RR_ONLY=False,lag = 0,obs_noise=0):
+def model_evaluate_new(obs_rate_allStimTrials,pred_rate,filt_width=0,RR_ONLY=False,lag = 0,obs_noise=0):
     numCells = obs_rate_allStimTrials.shape[-1]
     if obs_rate_allStimTrials.ndim>2:
         num_trials = obs_rate_allStimTrials.shape[0]
@@ -490,9 +490,9 @@ def model_evaluate_new(obs_rate_allStimTrials,pred_rate,filt_width,RR_ONLY=False
     
         t_start = 20
         
-        # obs_rate_allStimTrials_corrected = obs_rate_allStimTrials[:,filt_width:,:]
-        obs_rate_allStimTrials_corrected = obs_rate_allStimTrials
-        t_end = obs_rate_allStimTrials_corrected.shape[1]-t_start-20
+        obs_rate_allStimTrials_corrected = obs_rate_allStimTrials[:,filt_width:,:]
+        # obs_rate_allStimTrials_corrected = obs_rate_allStimTrials
+        t_end = obs_rate_allStimTrials_corrected.shape[1]-t_start
         obs_rate_allStimTrials_corrected = obs_rate_allStimTrials_corrected[:,t_start:t_end-lag,:]
         
         # if RR_ONLY is False:

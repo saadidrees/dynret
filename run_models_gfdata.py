@@ -73,12 +73,12 @@ data_val = prepare_data_cnn2d(data_val,temporal_width,idx_unitsToTake)
 
 # %% Build a conventional-CNN
 
-chan1_n=10
-filt1_size=11
-chan2_n=15
+chan1_n=8
+filt1_size=9
+chan2_n=16
 filt2_size=7
-chan3_n=20
-filt3_size=7
+chan3_n=18
+filt3_size=5
 bz=125
 BatchNorm=1
 MaxPool=1
@@ -98,7 +98,7 @@ mdl = models.cnn2d(inp_shape,n_rgcs,**dict_params)
 mdl.summary()
 
 # %% Train model
-lr = 0.0001
+lr = 0.001
 nb_epochs=100
 
 mdl.compile(loss='poisson', optimizer=tf.keras.optimizers.legacy.Adam(lr))
@@ -123,7 +123,7 @@ num_iters = 10
 samps_shift = 0 
 
 
-pred_rate = mdl.predict(data_test.X)
+pred_rate = mdl.predict(data_val.X)
 
 fev_loop = np.zeros((num_iters,n_rgcs))
 fracExVar_loop = np.zeros((num_iters,n_rgcs))
@@ -131,7 +131,8 @@ predCorr_loop = np.zeros((num_iters,n_rgcs))
 rrCorr_loop = np.zeros((num_iters,n_rgcs))
 
 for j in range(num_iters):  # nunm_iters is 1 with my dataset. This was mainly for greg's data where we would randomly split the dataset to calculate performance metrics 
-    fev_loop[j,:], fracExVar_loop[j,:], predCorr_loop[j,:], rrCorr_loop[j,:] = model_evaluate_new(obs_rate_allStimTrials,pred_rate,temporal_width,lag=int(samps_shift),obs_noise=obs_noise)
+    fev_loop[j,:], fracExVar_loop[j,:], predCorr_loop[j,:], rrCorr_loop[j,:] = model_evaluate_new(obs_rate_allStimTrials,pred_rate,filt_width=temporal_width,
+                                                                                                  lag=int(samps_shift),obs_noise=obs_noise)
     
 fev = np.mean(fev_loop,axis=0)
 
